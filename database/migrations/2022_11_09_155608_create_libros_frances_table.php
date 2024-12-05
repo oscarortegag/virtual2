@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('categoria', 100);
             $table->string('idioma' ,20);
             $table->integer('cantidad');
+            $table->string('foto',100)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

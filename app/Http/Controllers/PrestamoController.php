@@ -20,7 +20,7 @@ class PrestamoController extends Controller
      */
     public function index()
     {
-       $libros = prestamos::with('usuario:id,name', 'libros:id,titulo')->orderBy('fecha_prestamo')->get();
+       $libros = prestamos::with('usuario:id,name,matricula', 'libros:id,titulo,foto')->orderBy('fecha_inicial')->get();
      // dd($libros);
        return view('/prestamolistado', compact('libros'));
     }
@@ -52,11 +52,15 @@ class PrestamoController extends Controller
      */
     public function store(validacionPrestamo $request)
     {
+
         $libro = Libros_frances::findOrFail($request->libro_id);
+
         $libro->prestamo()->create([
-            'fecha_prestamo' => $request->fecha_prestamo,
+            'fecha_inicial' => $request->fecha_inicial,
+            'fecha_final' => $request->fecha_final,
             'comentario' => $request->comentario,
-            'usuario_id' => auth()->user()->id
+            'usuario_id' => auth()->user()->id,
+            'foto' =>$libro->foto,
         ]);
        return redirect()->route('prestamo.index')->with('mensaje', 'El libro Prestado se registro');
     }
@@ -71,10 +75,15 @@ class PrestamoController extends Controller
     {
       
       if ($request) {
+          // Establecemos la zona horaria a la que corresponde
+          date_default_timezone_set('America/Cancun'); // Cambia esto según tu zona horaria
+
             prestamos::where('libros_frances_id', $libros_frances_id)
             ->whereNull('fecha_devolucion')
-            ->update(['fecha_devolucion' => date('Y-m-d\TH:i')]);
-           
+            ->update([
+                'fecha_devolucion' => date('Y-m-d\TH:i'),
+                'finalizado' => 1,
+            ]);
         } else {
             abort(404);
         }

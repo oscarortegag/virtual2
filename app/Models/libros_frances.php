@@ -19,7 +19,8 @@ class libros_frances extends Model
      'isbn',
      'categoria',
      'idioma',
-     'cantidad',   
+     'cantidad', 
+     'foto'  
     ];
 
     public function prestamo()

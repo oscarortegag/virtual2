@@ -20,13 +20,16 @@ class prestamos extends Model
         'comentario',
         'finalizado',
         'fecha_prestamo',
+        'fecha_final',
         'fecha_devolucion',
         'urgencia',
+        'foto',
 
     
     ];
-       protected $dates = ['fecha_prestamo'];
-       protected $dates2 = ['fecha_devolucion'];
+       protected $dates = ['fecha_inicial'];
+       protected $dates2 = ['fecha_final'];
+       protected $dates3 = ['fecha_devolucion'];
 
        public function usuario()
        {

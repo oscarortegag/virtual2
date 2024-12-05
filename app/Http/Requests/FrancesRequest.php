@@ -28,10 +28,12 @@ class FrancesRequest extends FormRequest
             'nivel'   => 'required|max:10',
             'editorial'  => 'required|max:255',
             'autor'   => 'required|max:255',
-            'isbn'  => 'required|max:11',
+            'isbn'  => 'required|max:20',
             'categoria'  => 'required|max:100',
             'idioma'  => 'required|max:20',
             'cantidad'  =>'required|max:11',
+            'foto' =>'sometimes',
+           
         ];
     }
 }

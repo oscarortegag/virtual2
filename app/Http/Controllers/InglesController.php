@@ -6,6 +6,8 @@ use App\Models\material_ingles;
 use Illuminate\Http\Request;
 use App\Http\Requests\FrancesRequest;
 use PDF;
+use App\Imports\InglesImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class InglesController extends Controller
@@ -46,9 +48,27 @@ class InglesController extends Controller
      */
     public function store(FrancesRequest $request)
     {
+        // $newIngles = new InglesController();
+        //dd($request->all());
+        //dd($request->{'foto'}->getClientOriginalName() );
         $datos = $request->validated();
+     //$material_ingles = material_ingles::create ( $datos );
+      if( isset($datos["foto"] )) {
+      //  $file = $request->file('foto');
+       // $destinationPath = 'storage/app/public/imagenes/caratulas/';
+        $datos["foto"] = $filename = time().".".$datos["foto"]->extension();
+       // $uploadSuccess = $request->file('foto')->move($destinationPath, $filename);
+       // $newIngles->foto =$destinationPath . $filename; 
+     // }
+      $request->foto->move(public_path("storage/app/public/imagenes/caratulas/"), $filename);
+      $material_ingles = material_ingles::create ( $datos );
+      }
+    
+    else{
+     
         $material_ingles = material_ingles::create ( $datos );
-        return redirect()->route('librosingles.index');
+   }
+       return redirect()->route('librosingles.index');
     }
 
     /**
@@ -57,11 +77,12 @@ class InglesController extends Controller
      * @param  \App\Models\material_ingles  $material_ingles
      * @return \Illuminate\Http\Response
      */
-    public function show(material_ingles $material_ingles)
+    public function ver(material_ingles $material_ingles)
     {
-        //
-    }
-
+            return view('veringles', compact('material_ingles'));
+      
+        }
+    
     /**
      * Show the form for editing the specified resource.
      *
@@ -82,7 +103,7 @@ class InglesController extends Controller
      */
     public function update(FrancesRequest $request, material_ingles $material_ingles)
     {
-        $datos = $request->validated();
+        $datos = $request->except('foto');
       $material_ingles->update($datos);
       return redirect()->route('librosingles.index');
     }
@@ -98,4 +119,14 @@ class InglesController extends Controller
         $material_ingles->delete();
       return redirect()->route('librosingles.index');
     }
+
+    public function importar(Request $request)
+    {
+        $file = $request->file('import_file');
+
+        Excel::import(new InglesImport, $file);
+
+        return redirect()->route('librosingles.index');
+    }
+
 }

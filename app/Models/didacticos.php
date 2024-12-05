@@ -12,6 +12,7 @@ class didacticos extends Model
     protected $fillable = [
     'nombre',
     'categoria',
-    'cantidad',   
+    'cantidad',  
+    'foto' 
    ];
 }

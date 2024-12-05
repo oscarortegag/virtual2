@@ -194,6 +194,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+        ConsoleTVs\Charts\ChartsServiceProvider::class,
 
     ],
 
@@ -211,6 +213,8 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
 
        'PDF' => Barryvdh\DomPDF\Facade::class,
+       'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+       'Charts' => ConsoleTVs\Charts\Facades\Charts::class,
     ])->toArray(),
 
 ];

@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<style type="text/css">
+    [class*=sidebar-dark-] {
+    background-color: #28a745;
+}
+</style>
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">

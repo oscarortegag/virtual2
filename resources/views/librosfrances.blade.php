@@ -3,97 +3,139 @@
 @section('title', 'Biblioteca de ingles')
 
 @section('content_header')
-    <h1>Contenido</h1>
+    <h1>Inventory</h1>
 @stop
 
 @section('content')
 
+<style type="text/css">
+     [class*=sidebar-dark-] {
+        background-color: #28a745;
+    }
 
+    /* Estilos para hacer el texto "French books" más grande y en negritas */
+    .card-title {
+        font-size: 24px;
+        font-weight: bold;
+    }
 
+    /* Estilos para los títulos de las columnas de la tabla */
+    th {
+        background-color: #28a745;
+        color: #fff;
+    }
 
-<tbody>
+    /* Estilos para los bordes de la tabla y las celdas */
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table th, .table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+    }
+</style>
+
 <div class="row">
-<div class="col-12">
-<div class="card">
-<div class="card-header">
-<h3 class="card-title">Libros de Frances</h3>
-<div class="card-tools">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">French books</h3>
+                <div class="card-tools">
 <div class="input-group-append">
+<form action="{{route('librosfrances.excel')}}" method="POST" enctype="multipart/form-data">
+    @csrf
+<input type="file" name="import_file" />
+<button class="btn btn-app" type="submit">Import</button>
+</form>  
 <a a href="{{ route('registrarfrances.create') }}" class="btn btn-app">
-<i class="fas fa-edit"></i> Nuevo registro
+<i class="fas fa-edit"></i> New registration
 </a>   
 </div> 
-<div class="input-group input-group-sm" style="width: 150px;">
-<input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-<div class="input-group-append">
-<button type="submit" class="btn btn-default">
-<i class="fas fa-search"></i>
-</button>
+            </div>
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Level</th>
+                            <th>Editorial</th>
+                            <th>Author</th>
+                            <th>isbn</th>
+                            <th>category</th>
+                            <th>Language</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($libros_frances as $libro)
+                        <tr>
+                            <td>
+                                <a href="{{route('ver_frances', $libro)}}" class="ver-libro">{{$libro->titulo}}</a>
+                            </td>
+                            <td>{{$libro->nivel }}</td>
+                            <td>{{$libro->editorial }}</td>
+                            <td>{{$libro->autor }}</td>
+                            <td>{{$libro->isbn }}</td>
+                            <td>{{$libro->categoria }}</td>
+                            <td>{{ $libro->idioma }}</td>
+                            <td>{{ $libro->cantidad }}</td>
+                            <td>
+                                <a href="{{ route('librosfrances.edit', $libro) }}" class="btn btn-default">Edit</a>
+                            </td>
+                            <td>
+                            <a href="{{ route('librosfrances.destroy', $libro) }}" class="btn btn-default deleteLink">Delete</a>
+                               
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="modal fade" id="modal-ver-libro" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Book</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
-</div>
-<div class="card-body table-responsive p-0">
- <table class="table table-hover text-nowrap">
-<thead>
-<tr>
-<th>Titulo</th>
-<th>nivel</th>
-<th>Editorial</th>
-<th>Autor</th>
-<th>isbn</th>
-<th>categoria</th>
-<th>]Idioma</th>
-<th>Cantidad</th>
-<th>Acciones</th>
-</tr>
-</thead>
-<tbody>
 
-@foreach ($libros_frances as $libros_frances)
-  <tr>
-    <td>
-       {{$libros_frances->titulo }}
-    </td>
- <td>
-       {{$libros_frances->nivel }}
-    </td>
-    <td>
-       {{$libros_frances->editorial }}
-    </td>
-    <td>
-       {{$libros_frances->autor }}
-    </td>
-    <td>
-       {{$libros_frances->isbn }}
-    </td>
-    <td>
-       {{$libros_frances->categoria }}
-    </td>
-    <td>
-       {{ $libros_frances->idioma }}
-    </td>
-    <td>
-       {{ $libros_frances->cantidad }}
-    </td>
-    <td>
-    <a href="{{ route('librosfrances.edit', $libros_frances) }}" button type="button" class="btn btn-default">Editar</button>
-</td>
-<td>
-   
-    <form action="{{ route('librosfrances.destroy', $libros_frances) }}" method="post" >
-        @csrf
-        @method('delete')
-    <a href="{{ route('librosfrances.destroy', $libros_frances) }}" button type="button" class="btn btn-default">Eliminar</button>
-</form>  
-</td>
-</tr>
-
-@endforeach
-
-
-
-</tbody>
+<div class="modal" id="deleteModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this register?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @stop
 
@@ -102,5 +144,21 @@
 @stop
 
 @section('js')
+<script>
+        // Añadir el evento clic al enlace "Delete"
+        const deleteLinks = document.querySelectorAll('.deleteLink');
+        deleteLinks.forEach(deleteLink => {
+            deleteLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                const deleteUrl = this.getAttribute('href');
+                $('#deleteModal').modal('show');
+                document.getElementById('confirmDeleteButton').addEventListener('click', function() {
+                    $('#deleteModal').modal('hide');
+                    window.location.href = deleteUrl;
+                });
+            });
+        });
+    </script>
     <script> console.log('Hi!'); </script>
+    <script src="{{asset("assets/pages/scripts/libro/index.js")}}" type="text/javascript"></script>
 @stop

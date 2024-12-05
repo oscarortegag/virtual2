@@ -9,6 +9,12 @@
 @section('content')
 
 
+<style type="text/css">
+    [class*=sidebar-dark-] {
+    background-color: #28a745;
+}
+</style>
+
 <section class="content">
 
 <div class="card">

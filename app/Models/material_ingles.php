@@ -9,6 +9,7 @@ class material_ingles extends Model
 {
     use HasFactory;
 
+    protected $table = "material_ingles";
     protected $fillable = [
         'titulo',
         'nivel',
@@ -17,6 +18,7 @@ class material_ingles extends Model
         'isbn',
         'categoria',
         'idioma',
-        'cantidad',   
+        'cantidad',  
+        'foto' 
        ];
 }

@@ -38,6 +38,8 @@ class FrancesController extends Controller
        return view('/registrarfrances') ;
     }
 
+
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -46,9 +48,31 @@ class FrancesController extends Controller
      */
     public function store(FrancesRequest $request)
     {
-        $datos = $request->validated();
+      $datos = $request->validated();
+      //$material_ingles = material_ingles::create ( $datos );
+       if( isset($datos["foto"] )) {
+       //  $file = $request->file('foto');
+        // $destinationPath = 'storage/app/public/imagenes/caratulas/';
+       // dd($datos["foto"]->extension());
+         $datos["foto"] = $filename = time().".".$datos["foto"]->extension();
+        // $uploadSuccess = $request->file('foto')->move($destinationPath, $filename);
+       //dd($datos);
+        // $newIngles->foto =$destinationPath . $filename; 
+      // }
+       $request->foto->move(public_path("storage/app/public/imagenes/caratulas/"), $filename);
+       $libros_frances = libros_frances::create ( $datos );
+       }
+       else{
+        
         $libros_frances = libros_frances::create ( $datos );
+      }
+       
         return redirect()->route('librosfrances.index');
+
+
+       // $datos = $request->validated();
+       // $libros_frances = libros_frances::create ( $datos );
+       // return redirect()->route('librosfrances.index');
     }
 
     /**
@@ -57,10 +81,12 @@ class FrancesController extends Controller
      * @param  \App\Models\libros_frances  $libros_frances
      * @return \Illuminate\Http\Response
      */
-    public function show(libros_frances $libros_frances)
+    public function ver(libros_frances $libros_frances)
     {
-        //
-    }
+            return view('verfrances', compact('libros_frances'));
+      
+        }
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -82,7 +108,7 @@ class FrancesController extends Controller
      */
     public function update(FrancesRequest $request, libros_frances $libros_frances)
     {
-      $datos = $request->validated();
+      $datos = $request->except('foto');
       $libros_frances->update($datos);
       return redirect()->route('librosfrances.index');
     }

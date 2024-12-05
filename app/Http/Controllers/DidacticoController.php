@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\didacticos;
 use Illuminate\Http\Request;
 use App\Http\Requests\MaterialRequest;
+use App\Imports\DidacticoImport;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 
@@ -48,9 +50,24 @@ class DidacticoController extends Controller
      */
     public function store(MaterialRequest $request)
     {
+
         $datos = $request->validated();
-        $didacticos = didacticos::create ( $datos );
-        return redirect()->route('materialdidactico.index');
+        //$material_ingles = material_ingles::create ( $datos );
+         if( isset($datos["foto"] )) {
+         //  $file = $request->file('foto');
+          // $destinationPath = 'storage/app/public/imagenes/caratulas/';
+           $datos["foto"] = $filename = time().".".$datos["foto"]->extension();
+          // $uploadSuccess = $request->file('foto')->move($destinationPath, $filename);
+          // $newIngles->foto =$destinationPath . $filename; 
+        // }
+         $request->foto->move(public_path("storage/app/public/imagenes/caratulas/"), $filename);
+         $didacticos = didacticos::create ( $datos );
+         }
+          return redirect()->route('materialdidactico.index');
+
+       // $datos = $request->validated();
+       // $didacticos = didacticos::create ( $datos );
+       // return redirect()->route('materialdidactico.index');
     }
 
     /**
@@ -59,9 +76,10 @@ class DidacticoController extends Controller
      * @param  \App\Models\didacticos  $didacticos
      * @return \Illuminate\Http\Response
      */
-    public function show(didacticos $didacticos)
+    public function ver(didacticos $didacticos)
     {
-        //
+        return view('verdidactico', compact('didacticos'));
+      
     }
 
     /**
@@ -84,7 +102,7 @@ class DidacticoController extends Controller
      */
     public function update(MaterialRequest $request, didacticos $didacticos)
     {
-        $datos = $request->validated();
+        $datos = $request->except('foto');
       $didacticos->update($datos);
       return redirect()->route('materialdidactico.index');
     }
@@ -98,6 +116,15 @@ class DidacticoController extends Controller
     public function destroy(didacticos $didacticos)
     {
         $didacticos->delete();
+        return redirect()->route('materialdidactico.index');
+    }
+
+    public function importar(Request $request)
+    {
+        $file = $request->file('import_file');
+
+        Excel::import(new DidacticoImport, $file);
+
         return redirect()->route('materialdidactico.index');
     }
 }
